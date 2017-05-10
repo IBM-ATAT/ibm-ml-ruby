@@ -8,9 +8,12 @@ Gem::Specification.new do |spec|
   spec.version       = IBM::MachineLearning::VERSION
   spec.authors       = ["David Thomason"]
 
-  spec.summary       = 'Client library for calling IBM Watson Machine Learning API'
-  spec.description   = 'Simplifies development of applications using an IBM Watson Machine Learning service by providing methods for getting deployments and calling them'
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary     = 'Client library for calling IBM Machine Learning API'
+  spec.description = 'Simplifies development of applications using an'\
+' IBM Machine Learning service by providing methods for getting deployments'\
+' and calling them. Operates with both IBM Watson Machine Learning'\
+' as well as Machine Learning for z/OS'
+  spec.homepage    = "TODO: Put your gem's website or public repo URL here."
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
@@ -25,7 +28,7 @@ Gem::Specification.new do |spec|
     f.match(%r{^(test|spec|features)/})
   end
   spec.bindir        = 'exe'
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.executables   = spec.files.grep(%r{^exe/}) {|f| File.basename(f)}
   spec.require_paths = ['lib']
 
   spec.add_development_dependency 'bundler', '~> 1.14'
