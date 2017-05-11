@@ -16,13 +16,14 @@ module IBM
         @http.use_ssl = true
       end
 
+      def get_model(deployment)
+        version_addr = deployment['entity']['artifactVersion']['href']
+        model_addr = version_addr[0..version_addr.index('/versions')-1]
+        get_request model_addr, 'entity'
+      end
+
       def get_deployments
-        url     = URI("https://#{@host}/v2/online/deployments")
-        header  = { authorization: "Bearer #{fetch_token}" }
-        request = Net::HTTP::Get.new url, header
-        response = @http.request(request)
-        body = JSON.parse(response.read_body)
-        body.key?('resources') ? body['resources'] : raise(body['message'])
+        get_request "https://#{@host}/v2/online/deployments", 'resources'
       end
 
       def get_score(prefix, deployment_id, record)
@@ -90,6 +91,19 @@ module IBM
 
       raise response.class.to_s if response.is_a? Net::HTTPClientError
       JSON.parse(response.read_body)['token']
+    end
+
+    private
+
+    def get_request(addr, top_key)
+      url     = URI(addr)
+      header  = { authorization: "Bearer #{fetch_token}" }
+      request = Net::HTTP::Get.new url, header
+
+      response = @http.request(request)
+
+      body = JSON.parse(response.read_body)
+      body.key?(top_key) ? body : raise(body['message'])
     end
   end
 end

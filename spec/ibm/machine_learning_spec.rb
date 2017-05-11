@@ -12,19 +12,33 @@ RSpec.describe IBM::MachineLearning do
   end
 
   it 'gets online deployments from Watson Machine Learning' do
-    service     = IBM::MachineLearning::Watson.new ENV['USERNAME'], ENV['PASSWORD']
-    deployments = service.get_deployments
+    service = IBM::MachineLearning::Watson.new ENV['USERNAME'], ENV['PASSWORD']
+    result  = service.get_deployments
+    expect(result).to be_a Hash
+    expect(result).to include 'resources'
+    deployments = result['resources']
     expect(deployments).to be_a Array
-    expect(deployments[0]).to include 'metadata'
-    expect(deployments[0]).to include 'entity'
+    deployments.each do |deployment|
+      expect(deployment).to include 'metadata'
+      expect(deployment).to include 'entity'
+    end
+  end
+
+  it 'gets model information from deployment information' do
+    service = IBM::MachineLearning::Watson.new ENV['USERNAME'], ENV['PASSWORD']
+    deployments_result = service.get_deployments
+    deployments = deployments_result['resources'][0]
+    model_result = service.get_model deployments
+    expect(model_result).to be_a Hash
+    expect(model_result).to include 'metadata'
+    expect(model_result).to include 'entity'
+    expect(model_result['entity']).to include 'inputDataSchema'
   end
 
   it 'gets a score result from Watson Machine Learning' do
     record = JSON.parse(ENV['RECORD'])
-    puts "sending record #{record}"
     service = IBM::MachineLearning::Watson.new ENV['USERNAME'], ENV['PASSWORD']
     score   = service.get_score ENV['PREFIX'], ENV['DEPLOYMENT'], record
-    puts score
     expect(score).to be_a(Hash)
   end
 
