@@ -11,6 +11,14 @@ RSpec.describe IBM::MachineLearning do
     expect(token).to be_a(String)
   end
 
+  it 'gets online deployments from Watson Machine Learning' do
+    service     = IBM::MachineLearning::Watson.new ENV['USERNAME'], ENV['PASSWORD']
+    deployments = service.get_deployments
+    expect(deployments).to be_a Array
+    expect(deployments[0]).to include 'metadata'
+    expect(deployments[0]).to include 'entity'
+  end
+
   it 'gets a score result from Watson Machine Learning' do
     record = JSON.parse(ENV['RECORD'])
     puts "sending record #{record}"

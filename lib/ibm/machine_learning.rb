@@ -16,6 +16,15 @@ module IBM
         @http.use_ssl = true
       end
 
+      def get_deployments
+        url     = URI("https://#{@host}/v2/online/deployments")
+        header  = { authorization: "Bearer #{fetch_token}" }
+        request = Net::HTTP::Get.new url, header
+        response = @http.request(request)
+        body = JSON.parse(response.read_body)
+        body.key?('resources') ? body['resources'] : raise(body['message'])
+      end
+
       def get_score(prefix, deployment_id, record)
         url = URI("https://#{@host}/#{prefix}/v2/scoring/#{deployment_id}")
 
