@@ -2,20 +2,41 @@ require 'json'
 require 'ibm/machine_learning/version'
 
 module IBM
+  # Module for calling a Machine Learning service
   module MachineLearning
-
+    # Class for calling cloud-based Watson Machine Learning scoring service
     class Watson
       include MachineLearning
 
       def initialize(username, password)
-        @username = username
-        @password = password
+        @username     = username
+        @password     = password
+        @host         = 'ibm-watson-ml.mybluemix.net'
+        @http         = Net::HTTP.new(@host, URI("https://#{@host}").port)
+        @http.use_ssl = true
+      end
+
+      def get_score(prefix, deployment_id, record)
+        url = URI("https://#{@host}/#{prefix}/v2/scoring/#{deployment_id}")
+
+        header = {
+          'authorization' => "Bearer #{fetch_token}",
+          'content-type'  => 'application/json'
+        }
+
+        request      = Net::HTTP::Put.new(url, header)
+        request.body = { record: record }.to_json
+
+        response = @http.request(request)
+
+        body = JSON.parse(response.read_body)
+        body.key?('result') ? body['result'] : raise(body['message'])
       end
 
       private
 
       def ldap_url
-        'https://ibm-watson-ml.mybluemix.net/v2/identity/token'
+        "https://#{@host}/v2/identity/token"
       end
 
       def ldap_request(http, url)
@@ -24,9 +45,9 @@ module IBM
         request.basic_auth @username, @password
         request
       end
-
     end
 
+    # Class for calling IBM Machine Learning for z/OS scoring service
     class Zos
       include MachineLearning
 
@@ -50,20 +71,16 @@ module IBM
         request.body = { username: @username, password: @password }.to_json
         request
       end
-
     end
 
     def fetch_token
-      url = URI ldap_url
-
+      url  = URI ldap_url
       http = Net::HTTP.new url.host, url.port
 
-      ldap_request(http, url)
       response = http.request ldap_request(http, url)
-      raise response.class.to_s if response.is_a? Net::HTTPClientError
 
+      raise response.class.to_s if response.is_a? Net::HTTPClientError
       JSON.parse(response.read_body)['token']
     end
-
   end
 end
