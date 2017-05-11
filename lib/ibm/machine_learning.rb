@@ -16,9 +16,10 @@ module IBM
         @http.use_ssl = true
       end
 
-      def get_model(deployment)
+      def get_model(deployment_id)
+        deployment = get_request "https://#{@host}/v2/online/deployments/#{deployment_id}", 'entity'
         version_addr = deployment['entity']['artifactVersion']['href']
-        model_addr = version_addr[0..version_addr.index('/versions')-1]
+        model_addr = version_addr[0..version_addr.index('/versions') - 1]
         get_request model_addr, 'entity'
       end
 

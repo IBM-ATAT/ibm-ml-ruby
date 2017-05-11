@@ -27,8 +27,8 @@ RSpec.describe IBM::MachineLearning do
   it 'gets model information from deployment information' do
     service = IBM::MachineLearning::Watson.new ENV['USERNAME'], ENV['PASSWORD']
     deployments_result = service.get_deployments
-    deployments = deployments_result['resources'][0]
-    model_result = service.get_model deployments
+    deployment_id = deployments_result['resources'][0]['metadata']['guid']
+    model_result = service.get_model deployment_id
     expect(model_result).to be_a Hash
     expect(model_result).to include 'metadata'
     expect(model_result).to include 'entity'
