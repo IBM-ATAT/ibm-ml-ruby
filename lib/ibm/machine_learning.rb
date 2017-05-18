@@ -1,4 +1,5 @@
 require 'json'
+require 'net/http'
 require 'ibm/machine_learning/version'
 
 module IBM
