@@ -45,8 +45,15 @@ RSpec.describe IBM::MachineLearning do
   it 'gets a token from IBM Machine Learning Local' do
     service = IBM::MachineLearning::Local.new ENV['LOCAL_HOST'], ENV['LOCAL_USERNAME'], ENV['LOCAL_PASSWORD']
     token   = service.fetch_token
-    p token
     expect(token).to be_a(String)
+  end
+
+  it 'gets a score result from IBM Machine Learning Local' do
+    record = eval(ENV['LOCAL_RECORD'])
+    service = IBM::MachineLearning::Local.new ENV['LOCAL_HOST'], ENV['LOCAL_USERNAME'], ENV['LOCAL_PASSWORD']
+    score   = service.get_score ENV['LOCAL_DEPLOYMENT'], record
+    p score
+    expect(score).to be_a(Array)
   end
 
   # it 'gets a token from Machine Learning for z/OS' do

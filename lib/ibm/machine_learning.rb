@@ -80,21 +80,21 @@ module IBM
         @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
 
-      def get_score(deployment_id, record)
-        url = URI("https://#{@host}/#{prefix}/v2/scoring/#{deployment_id}")
+      def get_score(deployment_id, hash)
+        url = URI("https://#{@host}/v2/scoring/online/#{deployment_id}")
 
         header = {
           'authorization' => "Bearer #{fetch_token}",
           'content-type'  => 'application/json'
         }
 
-        request      = Net::HTTP::Put.new(url, header)
-        request.body = { record: record }.to_json
+        request      = Net::HTTP::Post.new(url, header)
+        request.body = { fields: hash.keys, records: [hash.values] }.to_json
 
         response = @http.request(request)
 
         body = JSON.parse(response.read_body)
-        body.key?('result') ? body['result'] : raise(body['message'])
+        body.key?('records') ? body['records'][0] : raise(body['message'])
       end
 
       private
