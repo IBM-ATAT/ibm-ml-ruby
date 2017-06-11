@@ -42,12 +42,19 @@ RSpec.describe IBM::MachineLearning do
     expect(score).to be_a(Hash)
   end
 
-  it 'gets a token from Machine Learning for z/OS' do
-    service = IBM::MachineLearning::Zos.new ENV['MLZ_USERNAME'],
-                                            ENV['MLZ_PASSWORD'],
-                                            ENV['MLZ_HOST'],
-                                            ENV['MLZ_LDAP_PORT'], nil
+  it 'gets a token from IBM Machine Learning Local' do
+    service = IBM::MachineLearning::Local.new ENV['LOCAL_HOST'], ENV['LOCAL_USERNAME'], ENV['LOCAL_PASSWORD']
     token   = service.fetch_token
+    p token
     expect(token).to be_a(String)
   end
+
+  # it 'gets a token from Machine Learning for z/OS' do
+  #   service = IBM::MachineLearning::Zos.new ENV['MLZ_USERNAME'],
+  #                                           ENV['MLZ_PASSWORD'],
+  #                                           ENV['MLZ_HOST'],
+  #                                           ENV['MLZ_LDAP_PORT'], nil
+  #   token   = service.fetch_token
+  #   expect(token).to be_a(String)
+  # end
 end
