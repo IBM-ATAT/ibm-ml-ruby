@@ -12,7 +12,7 @@ RSpec.describe IBM::MachineLearning do
     expect(token).to be_a(String)
   end
 
-  it 'gets models deployments from Watson Machine Learning' do
+  it 'gets models from Watson Machine Learning' do
     service = IBM::MachineLearning::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
     result  = service.get_models
     expect(result).to be_a Hash
@@ -28,7 +28,7 @@ RSpec.describe IBM::MachineLearning do
     end
   end
 
-  it 'gets online deployments from Watson Machine Learning' do
+  it 'gets deployments from Watson Machine Learning' do
     service = IBM::MachineLearning::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
     result  = service.get_deployments
     expect(result).to be_a Hash

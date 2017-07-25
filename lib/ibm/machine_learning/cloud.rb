@@ -15,15 +15,7 @@ module IBM
       end
 
       def get_deployments
-        result = { 'count' => 0, 'resources' => [] }
-        get_models['resources'].each do |model|
-          if model['entity']['deployments']
-            deployments = get_request model['entity']['deployments']['href'], 'resources'
-            result['count'] += deployments['count']
-            result['resources'].concat deployments['resources']
-          end
-        end
-        result
+        get_request "https://#{@host}/v2/deployments", 'resources'
       end
 
       def get_model(model_id)
