@@ -10,32 +10,46 @@ module IBM
         @http.use_ssl = true
       end
 
-      def get_model(deployment_id)
-        deployment   = get_request "https://#{@host}/v2/online/deployments/#{deployment_id}", 'entity'
-        version_addr = deployment['entity']['artifactVersion']['href']
-        model_addr   = version_addr[0..version_addr.index('/versions') - 1]
-        get_request model_addr, 'entity'
+      def get_models
+        get_request "https://#{@host}/v2/published_models", 'resources'
       end
 
       def get_deployments
-        get_request "https://#{@host}/v2/online/deployments", 'resources'
+        result = { 'count' => 0, 'resources' => [] }
+        get_models['resources'].each do |model|
+          if model['entity']['deployments']
+            deployments = get_request model['entity']['deployments']['href'], 'resources'
+            result['count'] += deployments['count']
+            result['resources'].concat deployments['resources']
+          end
+        end
+        result
       end
 
-      def get_score(prefix, deployment_id, record)
-        url = URI("https://#{@host}/#{prefix}/v2/scoring/#{deployment_id}")
+      def get_model(model_id)
+        get_request "https://#{@host}/v2/published_models/#{model_id}", 'entity'
+      end
+      
+      def get_score(model_id, deployment_id, record)
+        
+        url = URI("https://#{@host}/v2/published_models/#{model_id}/deployments/#{deployment_id}/online")
 
         header = {
           'authorization' => "Bearer #{fetch_token}",
           'content-type'  => 'application/json'
         }
 
-        request      = Net::HTTP::Put.new(url, header)
-        request.body = { record: record }.to_json
+        request      = Net::HTTP::Post.new(url, header)
+        request.body = {
+          fields: get_model(model_id)['entity']['input_data_schema']['fields'].map { |field| field['name'] },
+          values: [record]
+        }.to_json
 
         response = @http.request(request)
 
         body = JSON.parse(response.read_body)
-        body.key?('result') ? body['result'] : raise(body['message'])
+        return body if body.key?('fields') && body.key?('values')
+        raise(body['message'] + ' : ' + body['description'])
       end
 
       private
