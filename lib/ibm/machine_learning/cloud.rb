@@ -1,6 +1,6 @@
-# Class for calling cloud-based Watson Machine Learning scoring service
 module IBM
   module MachineLearning
+    # Class for calling cloud-based Watson Machine Learning scoring service
     class Cloud
       include MachineLearning
 
@@ -10,30 +10,31 @@ module IBM
         @http.use_ssl = true
       end
 
-      def get_models
+      def published_models
         get_request "https://#{@host}/v2/published_models", 'resources'
       end
 
-      def get_deployments
+      def deployments
         get_request "https://#{@host}/v2/deployments", 'resources'
       end
 
       def get_model(model_id)
         get_request "https://#{@host}/v2/published_models/#{model_id}", 'entity'
       end
-      
+
       def get_score(model_id, deployment_id, record)
-        
         url = URI("https://#{@host}/v2/published_models/#{model_id}/deployments/#{deployment_id}/online")
 
+        # noinspection RubyStringKeysInHashInspection
         header = {
           'authorization' => "Bearer #{fetch_token}",
           'content-type'  => 'application/json'
         }
 
+        model_fields = get_model(model_id)['entity']['input_data_schema']['fields']
         request      = Net::HTTP::Post.new(url, header)
         request.body = {
-          fields: get_model(model_id)['entity']['input_data_schema']['fields'].map { |field| field['name'] },
+          fields: model_fields.map { |field| field['name'] },
           values: [record]
         }.to_json
 
@@ -61,6 +62,5 @@ module IBM
         JSON.parse(response.read_body)['token']
       end
     end
-
   end
 end

@@ -1,6 +1,7 @@
-# Class for calling Local Machine Learning scoring service
+
 module IBM
   module MachineLearning
+    # Class for calling Local Machine Learning scoring service
     class Local
       include MachineLearning
 
@@ -14,6 +15,7 @@ module IBM
       def get_score(deployment_id, hash)
         url = URI("https://#{@host}/v2/scoring/online/#{deployment_id}")
 
+        # noinspection RubyStringKeysInHashInspection
         header = {
           'authorization' => "Bearer #{fetch_token}",
           'content-type'  => 'application/json'

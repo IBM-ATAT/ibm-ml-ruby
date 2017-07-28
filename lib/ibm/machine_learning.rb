@@ -2,10 +2,9 @@ require 'json'
 require 'net/https'
 require 'ibm/machine_learning/version'
 
-# Module for calling a Machine Learning service
 module IBM
+  # Module for calling a Machine Learning service
   module MachineLearning
-
     require_relative 'machine_learning/cloud'
     require_relative 'machine_learning/local'
     require_relative 'machine_learning/zos'

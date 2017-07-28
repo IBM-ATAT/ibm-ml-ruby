@@ -1,6 +1,6 @@
-# Class for calling IBM Machine Learning for z/OS scoring service
 module IBM
   module MachineLearning
+    # Class for calling IBM Machine Learning for z/OS scoring service
     class Zos
       include MachineLearning
 
@@ -18,7 +18,7 @@ module IBM
         "http://#{@host}:#{@ldap_port}/v2/identity/ldap"
       end
 
-      def ldap_request(http, url)
+      def ldap_request(_, url)
         request = Net::HTTP::Post.new(url)
         request.set_content_type 'application/json'
         request.body = { username: @username, password: @password }.to_json

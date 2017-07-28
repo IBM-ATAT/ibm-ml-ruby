@@ -1,7 +1,8 @@
 require 'spec_helper'
+require 'json'
 require 'pp'
 
-RSpec.describe IBM::MachineLearning do
+RSpec.describe IBM::MachineLearning do # rubocop:disable Metrics/BlockLength
   it 'has a version number' do
     expect(IBM::MachineLearning::VERSION).not_to be nil
   end
@@ -14,7 +15,7 @@ RSpec.describe IBM::MachineLearning do
 
   it 'gets models from Watson Machine Learning' do
     service = IBM::MachineLearning::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
-    result  = service.get_models
+    result  = service.published_models
     expect(result).to be_a Hash
     expect(result).to include 'resources'
     models = result['resources']
@@ -30,7 +31,7 @@ RSpec.describe IBM::MachineLearning do
 
   it 'gets deployments from Watson Machine Learning' do
     service = IBM::MachineLearning::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
-    result  = service.get_deployments
+    result  = service.deployments
     expect(result).to be_a Hash
     expect(result).to include 'resources'
     deployments = result['resources']
@@ -46,8 +47,9 @@ RSpec.describe IBM::MachineLearning do
 
   it 'gets model information from deployment information' do
     service = IBM::MachineLearning::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
-    service.get_deployments['resources'].each do |deployment|
-      model_result = service.get_model deployment['entity']['published_model']['guid']
+    service.deployments['resources'].each do |deployment|
+      model_guid = deployment['entity']['published_model']['guid']
+      model_result = service.get_model model_guid
       expect(model_result).to include 'entity'
       expect(model_result['entity']).to include 'input_data_schema'
       expect(model_result['entity']).to include 'deployments'
@@ -57,8 +59,10 @@ RSpec.describe IBM::MachineLearning do
   it 'gets a score result from Watson Machine Learning' do
     record  = JSON.parse(ENV['RECORD'])
     service = IBM::MachineLearning::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
-    service.get_deployments['resources'].each do |deployment|
-      score = service.get_score deployment['entity']['published_model']['guid'], deployment['metadata']['guid'], record
+    service.deployments['resources'].each do |deployment|
+      model_guid = deployment['entity']['published_model']['guid']
+      deployment_guid = deployment['metadata']['guid']
+      score = service.get_score model_guid, deployment_guid, record
       expect(score).to be_a(Hash)
       expect(score.keys).to include 'fields'
       expect(score.keys).to include 'values'
@@ -67,14 +71,18 @@ RSpec.describe IBM::MachineLearning do
   end
 
   it 'gets a token from IBM Machine Learning Local' do
-    service = IBM::MachineLearning::Local.new ENV['LOCAL_HOST'], ENV['LOCAL_USERNAME'], ENV['LOCAL_PASSWORD']
+    service = IBM::MachineLearning::Local.new ENV['LOCAL_HOST'],
+                                              ENV['LOCAL_USERNAME'],
+                                              ENV['LOCAL_PASSWORD']
     token   = service.fetch_token
     expect(token).to be_a(String)
   end
 
   it 'gets a score result from IBM Machine Learning Local' do
-    record  = eval(ENV['LOCAL_RECORD'])
-    service = IBM::MachineLearning::Local.new ENV['LOCAL_HOST'], ENV['LOCAL_USERNAME'], ENV['LOCAL_PASSWORD']
+    record  = JSON.parse(ENV['LOCAL_RECORD'])
+    service = IBM::MachineLearning::Local.new ENV['LOCAL_HOST'],
+                                              ENV['LOCAL_USERNAME'],
+                                              ENV['LOCAL_PASSWORD']
     score   = service.get_score ENV['LOCAL_DEPLOYMENT'], record
     p score
     expect(score).to be_a(Array)
