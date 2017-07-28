@@ -5,15 +5,14 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'ibm/machine_learning/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'ibm-machine_learning'
+  spec.name          = 'ibm-ml'
   spec.version       = IBM::MachineLearning::VERSION
   spec.authors       = ["David Thomason"]
 
   spec.summary     = 'Client library for calling IBM Machine Learning API'
-  spec.description = 'Simplifies development of applications using an'\
-' IBM Machine Learning service by providing methods for getting deployments'\
-' and calling them. Operates with both IBM Watson Machine Learning'\
-' as well as Machine Learning for z/OS'
+  spec.description = 'Simplifies development of applications using an IBM Machine Learning service '\
+                     'by providing methods for getting deployments and calling them. '\
+                     'Operates with both IBM Watson Machine Learning as well as Machine Learning on DSX Local.'
   spec.homepage    = "TODO: Put your gem's website or public repo URL here."
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

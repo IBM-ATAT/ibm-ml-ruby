@@ -11,7 +11,7 @@ Currently supports:
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ibm-machine_learning'
+gem 'ibm-ml'
 ```
 
 And then execute:
@@ -20,7 +20,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install ibm-machine_learning
+    $ gem install ibm-ml
 
 ## Usage
 
