@@ -1,8 +1,10 @@
-# Ibm::MachineLearning
+# IBM::MachineLearning
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/ibm/machine_learning`. To experiment with that code, run `bin/console` for an interactive prompt.
+A Ruby gem to invoke the IBM Machine Learning service REST API.
 
-TODO: Delete this and the text above, and describe your gem
+Currently supports:
+- [IBM Watson Machine Learning API](https://watson-ml-api.mybluemix.net/)
+- [Machine Learning from DSX Local](https://datascience.ibm.com/docs/content/local/models.html#evaluate-models-with-rest-apis)
 
 ## Installation
 
@@ -22,7 +24,21 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+#### Cloud
+```ruby
+service = IBM::MachineLearning::Cloud.new('<ML_SERVICE_USERNAME>', '<ML_SERVICE_PASSWORD>')
+p service.fetch_token
+p service.published_models
+p service.deployments
+p service.get_score('<model_guid>', '<deployment_guid>', ['record', 'input', 'values'])
+```
+
+#### Local
+```ruby
+service = IBM::MachineLearning::Local.new('<DSX_LOCAL_HOST>', '<DSX_LOCAL_USERNAME>', '<DSX_LOCAL_PASSWORD>')
+p service.fetch_token
+p service.get_score('<deployment_guid>', ['record', 'input', 'values'])
+```
 
 ## Development
 
@@ -32,5 +48,5 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/David Thomason/ibm-machine_learning.
+Bug reports and pull requests are welcome on GitHub at [https://github.com/IBM-ATAT/ibm-ml-ruby](https://github.com/IBM-ATAT/ibm-ml-ruby).
 
