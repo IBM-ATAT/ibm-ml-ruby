@@ -1,13 +1,13 @@
 require 'json'
 require 'net/https'
-require 'ibm/machine_learning/version'
+require 'ibm/ml/version'
 
 module IBM
   # Module for calling a Machine Learning service
   module MachineLearning
-    require_relative 'machine_learning/cloud'
-    require_relative 'machine_learning/local'
-    require_relative 'machine_learning/zos'
+    require_relative 'ml/cloud'
+    require_relative 'ml/local'
+    require_relative 'ml/zos'
 
     def initialize(username, password)
       @username     = username
