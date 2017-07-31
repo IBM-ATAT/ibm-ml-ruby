@@ -4,7 +4,7 @@ require 'ibm/ml/version'
 
 module IBM
   # Module for calling a Machine Learning service
-  module MachineLearning
+  module ML
     require_relative 'ml/cloud'
     require_relative 'ml/local'
     require_relative 'ml/zos'

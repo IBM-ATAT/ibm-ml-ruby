@@ -1,8 +1,8 @@
 module IBM
-  module MachineLearning
+  module ML
     # Class for calling IBM Machine Learning for z/OS scoring service
     class Zos
-      include MachineLearning
+      include ML
 
       def initialize(username, password, host, ldap_port, scoring_port)
         @username     = username

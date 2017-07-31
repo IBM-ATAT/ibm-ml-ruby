@@ -6,7 +6,7 @@ require 'ibm/ml/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'ibm-ml'
-  spec.version       = IBM::MachineLearning::VERSION
+  spec.version       = IBM::ML::VERSION
   spec.authors       = ["David Thomason"]
 
   spec.summary     = 'Client library for calling IBM Machine Learning API'

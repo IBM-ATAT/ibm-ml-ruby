@@ -2,19 +2,19 @@ require 'spec_helper'
 require 'json'
 require 'pp'
 
-RSpec.describe IBM::MachineLearning do # rubocop:disable Metrics/BlockLength
+RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
   it 'has a version number' do
-    expect(IBM::MachineLearning::VERSION).not_to be nil
+    expect(IBM::ML::VERSION).not_to be nil
   end
 
   it 'gets a token from Watson Machine Learning' do
-    service = IBM::MachineLearning::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
+    service = IBM::ML::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
     token   = service.fetch_token
     expect(token).to be_a(String)
   end
 
   it 'gets models from Watson Machine Learning' do
-    service = IBM::MachineLearning::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
+    service = IBM::ML::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
     result  = service.published_models
     expect(result).to be_a Hash
     expect(result).to include 'resources'
@@ -30,7 +30,7 @@ RSpec.describe IBM::MachineLearning do # rubocop:disable Metrics/BlockLength
   end
 
   it 'gets deployments from Watson Machine Learning' do
-    service = IBM::MachineLearning::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
+    service = IBM::ML::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
     result  = service.deployments
     expect(result).to be_a Hash
     expect(result).to include 'resources'
@@ -46,7 +46,7 @@ RSpec.describe IBM::MachineLearning do # rubocop:disable Metrics/BlockLength
   end
 
   it 'gets model information from deployment information' do
-    service = IBM::MachineLearning::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
+    service = IBM::ML::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
     service.deployments['resources'].each do |deployment|
       model_guid = deployment['entity']['published_model']['guid']
       model_result = service.get_model model_guid
@@ -58,7 +58,7 @@ RSpec.describe IBM::MachineLearning do # rubocop:disable Metrics/BlockLength
 
   it 'gets a score result from Watson Machine Learning' do
     record  = JSON.parse(ENV['RECORD'])
-    service = IBM::MachineLearning::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
+    service = IBM::ML::Cloud.new ENV['USERNAME'], ENV['PASSWORD']
     service.deployments['resources'].each do |deployment|
       model_guid = deployment['entity']['published_model']['guid']
       deployment_guid = deployment['metadata']['guid']
@@ -71,18 +71,18 @@ RSpec.describe IBM::MachineLearning do # rubocop:disable Metrics/BlockLength
   end
 
   it 'gets a token from IBM Machine Learning Local' do
-    service = IBM::MachineLearning::Local.new ENV['LOCAL_HOST'],
-                                              ENV['LOCAL_USERNAME'],
-                                              ENV['LOCAL_PASSWORD']
+    service = IBM::ML::Local.new ENV['LOCAL_HOST'],
+                                 ENV['LOCAL_USERNAME'],
+                                 ENV['LOCAL_PASSWORD']
     token   = service.fetch_token
     expect(token).to be_a(String)
   end
 
   it 'gets a score result from IBM Machine Learning Local' do
     record  = JSON.parse(ENV['LOCAL_RECORD'])
-    service = IBM::MachineLearning::Local.new ENV['LOCAL_HOST'],
-                                              ENV['LOCAL_USERNAME'],
-                                              ENV['LOCAL_PASSWORD']
+    service = IBM::ML::Local.new ENV['LOCAL_HOST'],
+                                 ENV['LOCAL_USERNAME'],
+                                 ENV['LOCAL_PASSWORD']
     score   = service.get_score ENV['LOCAL_DEPLOYMENT'], record
     p score
     expect(score).to be_a(Array)

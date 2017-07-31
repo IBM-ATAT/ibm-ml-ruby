@@ -1,9 +1,9 @@
 
 module IBM
-  module MachineLearning
+  module ML
     # Class for calling Local Machine Learning scoring service
     class Local
-      include MachineLearning
+      include ML
 
       def initialize(host, username, password)
         @host = host

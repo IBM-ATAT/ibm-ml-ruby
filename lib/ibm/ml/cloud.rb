@@ -1,8 +1,8 @@
 module IBM
-  module MachineLearning
+  module ML
     # Class for calling cloud-based Watson Machine Learning scoring service
     class Cloud
-      include MachineLearning
+      include ML
 
       def initialize(username, password)
         @host = 'ibm-watson-ml.mybluemix.net'

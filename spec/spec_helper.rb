@@ -1,5 +1,5 @@
 require 'bundler/setup'
-require 'ibm/machine_learning'
+require 'ibm/ml'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
