@@ -1,4 +1,4 @@
-# IBM::MachineLearning
+# IBM::ML
 
 A Ruby gem to invoke the IBM Machine Learning service REST API.
 
@@ -26,7 +26,7 @@ Or install it yourself as:
 
 #### Cloud
 ```ruby
-service = IBM::MachineLearning::Cloud.new('<ML_SERVICE_USERNAME>', '<ML_SERVICE_PASSWORD>')
+service = IBM::ML::Cloud.new('<ML_SERVICE_USERNAME>', '<ML_SERVICE_PASSWORD>')
 p service.fetch_token
 p service.published_models
 p service.deployments
@@ -35,7 +35,7 @@ p service.get_score('<model_guid>', '<deployment_guid>', ['record', 'input', 'va
 
 #### Local
 ```ruby
-service = IBM::MachineLearning::Local.new('<DSX_LOCAL_HOST>', '<DSX_LOCAL_USERNAME>', '<DSX_LOCAL_PASSWORD>')
+service = IBM::ML::Local.new('<DSX_LOCAL_HOST>', '<DSX_LOCAL_USERNAME>', '<DSX_LOCAL_PASSWORD>')
 p service.fetch_token
 p service.get_score('<deployment_guid>', ['record', 'input', 'values'])
 ```
