@@ -27,7 +27,7 @@ module IBM
         response = @http.request(request)
 
         body = JSON.parse(response.read_body)
-        body.key?('records') ? body['records'][0] : raise(body['message'])
+        body.key?('records') ? body['records'][0] : raise(ScoringError, response.read_body)
       end
 
       private
@@ -47,6 +47,9 @@ module IBM
       def process_ldap_response(response)
         JSON.parse(response.read_body)['accessToken']
       end
+    end
+
+    class ScoringError < StandardError
     end
   end
 end
