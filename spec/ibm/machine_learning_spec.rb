@@ -84,8 +84,7 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
                                  ENV['LOCAL_USERNAME'],
                                  ENV['LOCAL_PASSWORD']
     score   = service.get_score ENV['LOCAL_DEPLOYMENT'], record
-    p score
-    expect(score).to be_a(Array)
+    expect(score).to be_a(Hash)
   end
 
   # it 'gets a token from Machine Learning for z/OS' do

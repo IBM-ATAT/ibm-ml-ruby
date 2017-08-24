@@ -27,7 +27,7 @@ module IBM
         response = @http.request(request)
 
         body = JSON.parse(response.read_body)
-        body.key?('records') ? body['records'][0] : raise(ScoringError, response.read_body)
+        body.key?('records') ? body : raise(ScoringError, response.read_body)
       end
 
       private
