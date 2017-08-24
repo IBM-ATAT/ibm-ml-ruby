@@ -87,6 +87,14 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     expect(score).to be_a(Hash)
   end
 
+  it 'handles bad deployment guid correctly for IBM Machine Learning Local' do
+    record  = JSON.parse(ENV['LOCAL_RECORD'])
+    service = IBM::ML::Local.new ENV['LOCAL_HOST'],
+                                 ENV['LOCAL_USERNAME'],
+                                 ENV['LOCAL_PASSWORD']
+    expect { service.get_score('blah', record) }.to raise_error(IBM::ML::ScoringError)
+  end
+
   # it 'gets a token from Machine Learning for z/OS' do
   #   service = IBM::MachineLearning::Zos.new ENV['MLZ_USERNAME'],
   #                                           ENV['MLZ_PASSWORD'],

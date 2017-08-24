@@ -26,8 +26,12 @@ module IBM
 
         response = @http.request(request)
 
-        body = JSON.parse(response.read_body)
-        body.key?('records') ? body : raise(ScoringError, response.read_body)
+        begin
+          body = JSON.parse(response.read_body)
+          body.key?('records') ? body : raise(ScoringError, response.read_body)
+        rescue JSON::ParserError => e
+          raise(ScoringError, response.read_body)
+        end
       end
 
       private
