@@ -24,20 +24,48 @@ Or install it yourself as:
 
 ## Usage
 
+#### Setup
+```ruby
+require 'ibm/ml'
+require 'pp'
+
+# example input record to score 
+record = {
+  GENDER:        'M',
+  AGEGROUP:      '45-54',
+  EDUCATION:     'Doctorate',
+  PROFESSION:    'Executive',
+  INCOME:        200000,
+  SWITCHER:      0,
+  LASTPURCHASE:  3,
+  ANNUAL_SPEND:  1200
+}
+```
+
 #### Cloud
 ```ruby
-service = IBM::ML::Cloud.new('<ML_SERVICE_USERNAME>', '<ML_SERVICE_PASSWORD>')
-p service.fetch_token
-p service.published_models
-p service.deployments
-p service.get_score('<model_guid>', '<deployment_guid>', ['record', 'input', 'values'])
+USERNAME =      # ML service username
+PASSWORD =      # ML service password
+MODEL_ID =      # model ID
+DEPLOYMENT_ID = # deployment ID
+
+service = IBM::ML::Cloud.new(USERNAME, PASSWORD)
+pp service.fetch_token
+pp service.published_models
+pp service.deployments
+pp service.get_score(MODEL_ID, DEPLOYMENT_ID, record.values)
 ```
 
 #### Local
 ```ruby
-service = IBM::ML::Local.new('<DSX_LOCAL_HOST>', '<DSX_LOCAL_USERNAME>', '<DSX_LOCAL_PASSWORD>')
-p service.fetch_token
-p service.get_score('<deployment_guid>', ['record', 'input', 'values'])
+HOST =          # DSX Local hostname / IP address
+USERNAME =      # DSX Local username
+PASSWORD =      # DSX Local password
+DEPLOYMENT_ID = # deployment ID
+
+service = IBM::ML::Local.new(HOST, USERNAME, PASSWORD)
+pp service.fetch_token
+pp service.get_score(DEPLOYMENT_ID, record)
 ```
 
 ## Development
