@@ -28,6 +28,14 @@ module IBM
         get_request "https://#{@host}/v2/published_models/#{model_id}", 'entity'
       end
 
+      def get_score_by_name(name, record)
+        deployments['resources'].each do |deployment|
+          if deployment['entity']['name'] == name
+            return get_score(deployment['entity']['published_model']['guid'], deployment['metadata']['guid'], record)
+          end
+        end
+      end
+
       def get_score(model_id, deployment_id, record)
         url = URI("https://#{@host}/v2/published_models/#{model_id}/deployments/#{deployment_id}/online")
 

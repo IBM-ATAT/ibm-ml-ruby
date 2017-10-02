@@ -78,6 +78,16 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     end
   end
 
+  it 'gets a score result by deployment name from Watson Machine Learning' do
+    service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
+    record  = JSON.parse(ENV['RECORD'])
+    score = service.get_score_by_name 'For Testing: Deployed aPhone ML Model', record
+    expect(score).to be_a(Hash)
+    expect(score.keys).to include 'fields'
+    expect(score.keys).to include 'values'
+    expect(score['fields']).to include 'prediction'
+  end
+
   it 'gets a token from IBM Machine Learning Local' do
     service = IBM::ML::Local.new ENV['LOCAL_HOST'],
                                  ENV['LOCAL_USERNAME'],
