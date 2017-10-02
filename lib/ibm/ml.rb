@@ -32,7 +32,7 @@ module IBM
 
     def get_request(addr, top_key)
       url     = URI(addr)
-      header  = { authorization: "Bearer #{fetch_token}" }
+      header  = { 'authorization' => "Bearer #{fetch_token}" }
       request = Net::HTTP::Get.new url, header
 
       response = @http.request(request)

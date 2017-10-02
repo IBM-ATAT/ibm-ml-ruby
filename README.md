@@ -1,4 +1,6 @@
 # IBM::ML
+[![Gem Version](https://badge.fury.io/rb/ibm-ml.svg)](https://badge.fury.io/rb/ibm-ml)
+[![Build Status](https://travis-ci.org/IBM-ATAT/ibm-ml-ruby.svg?branch=master)](https://travis-ci.org/IBM-ATAT/ibm-ml-ruby)
 
 A Ruby gem to invoke the IBM Machine Learning service REST API.
 
@@ -8,6 +10,14 @@ Currently supports:
 
 ## Installation
 
+#### With Gem
+After [installing Ruby](https://www.ruby-lang.org/en/documentation/installation/) >= 2.0:
+
+```bash
+$ gem install ibm-ml
+```
+
+#### With Bundler
 Add this line to your application's Gemfile:
 
 ```ruby
@@ -16,11 +26,9 @@ gem 'ibm-ml'
 
 And then execute:
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install ibm-ml
+```bash
+$ bundle install
+```
 
 ## Usage
 
@@ -53,7 +61,7 @@ service = IBM::ML::Cloud.new(USERNAME, PASSWORD)
 pp service.fetch_token
 pp service.published_models
 pp service.deployments
-pp service.get_score(MODEL_ID, DEPLOYMENT_ID, record.values)
+pp service.get_score(MODEL_ID, DEPLOYMENT_ID, record)
 ```
 
 #### Local
