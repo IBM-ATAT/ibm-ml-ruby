@@ -1,4 +1,5 @@
 # IBM::ML
+[![Gem Version](https://badge.fury.io/rb/ibm-ml.svg)](https://badge.fury.io/rb/ibm-ml)
 
 A Ruby gem to invoke the IBM Machine Learning service REST API.
 
@@ -8,6 +9,14 @@ Currently supports:
 
 ## Installation
 
+#### With Gem
+After [installing Ruby](https://www.ruby-lang.org/en/documentation/installation/):
+
+```bash
+$ gem install ibm-ml
+```
+
+#### With Bundler
 Add this line to your application's Gemfile:
 
 ```ruby
@@ -16,11 +25,9 @@ gem 'ibm-ml'
 
 And then execute:
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install ibm-ml
+```bash
+$ bundle install
+```
 
 ## Usage
 

@@ -35,7 +35,7 @@ module IBM
         request      = Net::HTTP::Post.new(url, header)
         request.body = {
           fields: model_fields.map { |field| field['name'] },
-          values: [record]
+          values: [record.values]
         }.to_json
 
         response = @http.request(request)
