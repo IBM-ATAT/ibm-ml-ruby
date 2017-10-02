@@ -10,14 +10,14 @@ Currently supports:
 
 ## Installation
 
-#### With Gem
+### With Gem
 After [installing Ruby](https://www.ruby-lang.org/en/documentation/installation/) >= 2.0:
 
 ```bash
 $ gem install ibm-ml
 ```
 
-#### With Bundler
+### With Bundler
 Add this line to your application's Gemfile:
 
 ```ruby
@@ -32,12 +32,12 @@ $ bundle install
 
 ## Usage
 
-#### Setup
+### Setup
 ```ruby
 require 'ibm/ml'
 require 'pp'
 
-# example input record to score 
+# input record to score 
 record = {
   GENDER:        'M',
   AGEGROUP:      '45-54',
@@ -50,30 +50,44 @@ record = {
 }
 ```
 
-#### Cloud
+### Cloud 
 ```ruby
-USERNAME =      # ML service username
-PASSWORD =      # ML service password
-MODEL_ID =      # model ID
-DEPLOYMENT_ID = # deployment ID
+CLOUD_USERNAME =      # WML service username
+CLOUD_PASSWORD =      # WML service password
+CLOUD_MODEL_ID =      # model ID
+CLOUD_DEPLOYMENT_ID = # deployment ID
 
-service = IBM::ML::Cloud.new(USERNAME, PASSWORD)
+# Create the service object
+service = IBM::ML::Cloud.new(CLOUD_USERNAME, CLOUD_PASSWORD)
+
+# Fetch an authentication token
 pp service.fetch_token
+
+# Query published models and deployments
 pp service.published_models
 pp service.deployments
-pp service.get_score(MODEL_ID, DEPLOYMENT_ID, record)
+pp service.get_deployment_by_name('Deployed aPhone ML Model')
+
+# Get a score for the given deployment and record
+pp service.get_score(CLOUD_MODEL_ID, CLOUD_DEPLOYMENT_ID, record)
+pp service.get_score_by_name('Deployed aPhone ML Model', record)
 ```
 
-#### Local
+### Local
 ```ruby
-HOST =          # DSX Local hostname / IP address
-USERNAME =      # DSX Local username
-PASSWORD =      # DSX Local password
-DEPLOYMENT_ID = # deployment ID
+LOCAL_HOST =          # DSX Local hostname / IP address
+LOCAL_USERNAME =      # DSX Local username
+LOCAL_PASSWORD =      # DSX Local password
+LOCAL_DEPLOYMENT_ID = # deployment ID
 
-service = IBM::ML::Local.new(HOST, USERNAME, PASSWORD)
+# Create the service object
+service = IBM::ML::Local.new(LOCAL_HOST, LOCAL_USERNAME, LOCAL_PASSWORD)
+
+# Fetch an authentication token
 pp service.fetch_token
-pp service.get_score(DEPLOYMENT_ID, record)
+
+# Get a score for the given deployment and record
+pp service.get_score(LOCAL_DEPLOYMENT_ID, record)
 ```
 
 ## Development
