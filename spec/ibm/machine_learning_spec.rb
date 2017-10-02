@@ -45,6 +45,14 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     end
   end
 
+  it 'gets specific deployment by name from Watson Machine Learning' do
+    service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
+    result  = service.get_deployment_by_name 'For Testing: Deployed aPhone ML Model'
+    expect(result).to be_a Hash
+    expect(result).to include 'metadata'
+    expect(result).to include 'entity'
+  end
+
   it 'gets model information from deployment information' do
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
     service.deployments['resources'].each do |deployment|

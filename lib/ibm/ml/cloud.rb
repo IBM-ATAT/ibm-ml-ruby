@@ -18,6 +18,12 @@ module IBM
         get_request "https://#{@host}/v2/deployments", 'resources'
       end
 
+      def get_deployment_by_name(name)
+        deployments['resources'].each do |deployment|
+          return deployment if deployment['entity']['name'] == name
+        end
+      end
+
       def get_model(model_id)
         get_request "https://#{@host}/v2/published_models/#{model_id}", 'entity'
       end
