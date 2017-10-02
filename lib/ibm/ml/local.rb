@@ -29,7 +29,7 @@ module IBM
         begin
           body = JSON.parse(response.read_body)
           body.key?('records') ? body : raise(ScoringError, response.read_body)
-        rescue JSON::ParserError => e
+        rescue JSON::ParserError
           raise(ScoringError, response.read_body)
         end
       end
