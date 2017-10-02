@@ -61,7 +61,7 @@ service = IBM::ML::Cloud.new(USERNAME, PASSWORD)
 pp service.fetch_token
 pp service.published_models
 pp service.deployments
-pp service.get_score(MODEL_ID, DEPLOYMENT_ID, record.values)
+pp service.get_score(MODEL_ID, DEPLOYMENT_ID, record)
 ```
 
 #### Local
