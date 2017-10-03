@@ -18,6 +18,10 @@ module IBM
         get_request "https://#{@host}/v2/deployments", 'resources'
       end
 
+      def deployment(guid)
+        find_by_id(deployments, guid)
+      end
+
       def deployment_by_name(name)
         find_by_name(deployments, name)
       end
@@ -32,18 +36,19 @@ module IBM
 
       def score_by_name(name, record)
         deployment = find_by_name(deployments, name)
-        score(deployment['entity']['published_model']['guid'], deployment['metadata']['guid'], record)
+        score(deployment['metadata']['guid'], record)
       end
 
-      def score(model_id, deployment_id, record)
-        url = URI("https://#{@host}/v2/published_models/#{model_id}/deployments/#{deployment_id}/online")
+      def score(deployment_id, record)
+        deployment = deployment(deployment_id)
+        url = URI(deployment['entity']['scoring_href'])
 
-        # noinspection RubyStringKeysInHashInspection
         header = {
           'authorization' => "Bearer #{fetch_token}",
           'content-type'  => 'application/json'
         }
 
+        model_id = deployment['entity']['published_model']['guid']
         model_fields = model(model_id)['entity']['input_data_schema']['fields']
         request      = Net::HTTP::Post.new(url, header)
         request.body = {
@@ -59,7 +64,7 @@ module IBM
       end
 
       def query_score(score, field)
-        fields = score['fields'].map &:upcase
+        fields = score['fields'].map(&:upcase)
         index = fields.index(field.upcase)
         score['values'].map { |record| record[index] }
       end
@@ -81,11 +86,18 @@ module IBM
         JSON.parse(response.read_body)['token']
       end
 
+      def find_by_id(response, guid)
+        response['resources'].each do |resource|
+          return resource if resource['metadata']['guid'] == guid
+        end
+      end
+
       def find_by_name(response, name)
         response['resources'].each do |resource|
           return resource if resource['entity']['name'] == name
         end
       end
+
     end
   end
 end

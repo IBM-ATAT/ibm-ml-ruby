@@ -59,6 +59,11 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     expect(result).to be_a Hash
     expect(result).to include 'metadata'
     expect(result).to include 'entity'
+
+    id_result = service.deployment result['metadata']['guid']
+    expect(id_result).to be_a Hash
+    expect(id_result).to include 'metadata'
+    expect(id_result).to include 'entity'
   end
 
   it 'gets model information from deployment information' do
@@ -76,10 +81,9 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     record  = JSON.parse(ENV['RECORD'])
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
     service.deployments['resources'].each do |deployment|
-      model_guid = deployment['entity']['published_model']['guid']
       deployment_guid = deployment['metadata']['guid']
 
-      score = service.score model_guid, deployment_guid, record
+      score = service.score deployment_guid, record
       expect(score).to be_a(Hash)
       expect(score.keys).to include 'fields'
       expect(score.keys).to include 'values'

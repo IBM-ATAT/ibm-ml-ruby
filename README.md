@@ -52,10 +52,9 @@ record = {
 
 ### Cloud 
 ```ruby
-CLOUD_USERNAME =      # WML service username
-CLOUD_PASSWORD =      # WML service password
-CLOUD_MODEL_ID =      # model ID
-CLOUD_DEPLOYMENT_ID = # deployment ID
+CLOUD_USERNAME  =  # WML service username
+CLOUD_PASSWORD  =  # WML service password
+DEPLOYMENT_ID   =  # deployment ID
 
 # Create the service object
 ml_service = IBM::ML::Cloud.new(CLOUD_USERNAME, CLOUD_PASSWORD)
@@ -69,10 +68,11 @@ pp ml_service.model_by_name('aPhone ML Model')
 
 # Query deployments
 pp ml_service.deployments
+pp ml_service.deployment(DEPLOYMENT_ID)
 pp ml_service.deployment_by_name('Deployed aPhone ML Model')
 
 # Get a score for the given deployment and record
-pp ml_service.score(CLOUD_MODEL_ID, CLOUD_DEPLOYMENT_ID, record)
+pp ml_service.score(DEPLOYMENT_ID, record)
 score = ml_service.score_by_name('Deployed aPhone ML Model', record)
 pp score
 puts
@@ -82,10 +82,10 @@ puts "Probability = #{ml_service.query_score(score, 'probability')}"
 
 ### Local
 ```ruby
-LOCAL_HOST =          # DSX Local hostname / IP address
-LOCAL_USERNAME =      # DSX Local username
-LOCAL_PASSWORD =      # DSX Local password
-LOCAL_DEPLOYMENT_ID = # deployment ID
+LOCAL_HOST      =  # DSX Local hostname / IP address
+LOCAL_USERNAME  =  # DSX Local username
+LOCAL_PASSWORD  =  # DSX Local password
+DEPLOYMENT_ID   =  # deployment ID
 
 # Create the service object
 ml_service = IBM::ML::Local.new(LOCAL_HOST, LOCAL_USERNAME, LOCAL_PASSWORD)
@@ -94,7 +94,7 @@ ml_service = IBM::ML::Local.new(LOCAL_HOST, LOCAL_USERNAME, LOCAL_PASSWORD)
 pp ml_service.fetch_token
 
 # Get a score for the given deployment and record
-pp ml_service.score(LOCAL_DEPLOYMENT_ID, record)
+pp ml_service.score(DEPLOYMENT_ID, record)
 ```
 
 ## Development
