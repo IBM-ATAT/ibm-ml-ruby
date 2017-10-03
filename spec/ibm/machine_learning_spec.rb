@@ -37,6 +37,14 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     expect(result).to include 'entity'
   end
 
+  it 'raises an error if cannot find specific model by name from Watson Machine Learning' do
+    service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
+    expect do
+      service.model_by_name 'This model name definitely does not exist'
+    end.to raise_error(IBM::ML::QueryError,
+                       'Could not find resource with name "This model name definitely does not exist"')
+  end
+
   it 'gets deployments from Watson Machine Learning' do
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
     result  = service.deployments
@@ -64,6 +72,14 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     expect(id_result).to be_a Hash
     expect(id_result).to include 'metadata'
     expect(id_result).to include 'entity'
+  end
+
+  it 'raises an error if cannot find specific deployment by name from Watson Machine Learning' do
+    service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
+    expect do
+      service.deployment_by_name 'This deployment name definitely does not exist'
+    end.to raise_error(IBM::ML::QueryError,
+                       'Could not find resource with name "This deployment name definitely does not exist"')
   end
 
   it 'gets model information from deployment information' do

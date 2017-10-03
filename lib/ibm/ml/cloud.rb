@@ -85,7 +85,11 @@ module IBM
         response['resources'].each do |resource|
           return resource if resource['entity']['name'] == name
         end
+        raise(QueryError, "Could not find resource with name \"#{name}\"")
       end
+    end
+
+    class QueryError < StandardError
     end
   end
 end
