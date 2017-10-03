@@ -58,6 +58,12 @@ module IBM
         raise(body['message'] + ' : ' + body['description'])
       end
 
+      def query_score(score, field)
+        fields = score['fields'].map &:upcase
+        index = fields.index(field.upcase)
+        score['values'].map { |record| record[index] }
+      end
+
       private
 
       def ldap_url

@@ -78,11 +78,25 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     service.deployments['resources'].each do |deployment|
       model_guid = deployment['entity']['published_model']['guid']
       deployment_guid = deployment['metadata']['guid']
+
       score = service.score model_guid, deployment_guid, record
       expect(score).to be_a(Hash)
       expect(score.keys).to include 'fields'
       expect(score.keys).to include 'values'
+
       expect(score['fields']).to include 'prediction'
+      prediction = service.query_score(score, 'predicTion')
+      expect(prediction).to be_a(Array)
+      expect(prediction[0]).to be(1.0).or(0.0)
+
+      expect(score['fields']).to include 'probability'
+      probability = service.query_score(score, 'proBability')
+      expect(probability).to be_a(Array)
+      expect(probability[0]).to be_a(Array)
+      expect(probability[0][0]).to be >= 0.0
+      expect(probability[0][0]).to be <= 1.0
+      expect(probability[0][1]).to be >= 0.0
+      expect(probability[0][1]).to be <= 1.0
     end
   end
 
