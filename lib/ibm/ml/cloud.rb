@@ -10,7 +10,7 @@ module IBM
         @http.use_ssl = true
       end
 
-      def published_models
+      def models
         get_request "https://#{@host}/v2/published_models", 'resources'
       end
 
@@ -18,25 +18,25 @@ module IBM
         get_request "https://#{@host}/v2/deployments", 'resources'
       end
 
-      def get_deployment_by_name(name)
+      def deployment_by_name(name)
         deployments['resources'].each do |deployment|
           return deployment if deployment['entity']['name'] == name
         end
       end
 
-      def get_model(model_id)
+      def model(model_id)
         get_request "https://#{@host}/v2/published_models/#{model_id}", 'entity'
       end
 
-      def get_score_by_name(name, record)
+      def score_by_name(name, record)
         deployments['resources'].each do |deployment|
           if deployment['entity']['name'] == name
-            return get_score(deployment['entity']['published_model']['guid'], deployment['metadata']['guid'], record)
+            return score(deployment['entity']['published_model']['guid'], deployment['metadata']['guid'], record)
           end
         end
       end
 
-      def get_score(model_id, deployment_id, record)
+      def score(model_id, deployment_id, record)
         url = URI("https://#{@host}/v2/published_models/#{model_id}/deployments/#{deployment_id}/online")
 
         # noinspection RubyStringKeysInHashInspection
@@ -45,7 +45,7 @@ module IBM
           'content-type'  => 'application/json'
         }
 
-        model_fields = get_model(model_id)['entity']['input_data_schema']['fields']
+        model_fields = model(model_id)['entity']['input_data_schema']['fields']
         request      = Net::HTTP::Post.new(url, header)
         request.body = {
           fields: model_fields.map { |field| field['name'] },

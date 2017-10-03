@@ -58,19 +58,19 @@ CLOUD_MODEL_ID =      # model ID
 CLOUD_DEPLOYMENT_ID = # deployment ID
 
 # Create the service object
-service = IBM::ML::Cloud.new(CLOUD_USERNAME, CLOUD_PASSWORD)
+ml_service = IBM::ML::Cloud.new(CLOUD_USERNAME, CLOUD_PASSWORD)
 
 # Fetch an authentication token
-pp service.fetch_token
+pp ml_service.fetch_token
 
-# Query published models and deployments
-pp service.published_models
-pp service.deployments
-pp service.get_deployment_by_name('Deployed aPhone ML Model')
+# Query models and deployments
+pp ml_service.models
+pp ml_service.deployments
+pp ml_service.deployment_by_name('Deployed aPhone ML Model')
 
 # Get a score for the given deployment and record
-pp service.get_score(CLOUD_MODEL_ID, CLOUD_DEPLOYMENT_ID, record)
-pp service.get_score_by_name('Deployed aPhone ML Model', record)
+pp ml_service.score(CLOUD_MODEL_ID, CLOUD_DEPLOYMENT_ID, record)
+pp ml_service.score_by_name('Deployed aPhone ML Model', record)
 ```
 
 ### Local
@@ -81,13 +81,13 @@ LOCAL_PASSWORD =      # DSX Local password
 LOCAL_DEPLOYMENT_ID = # deployment ID
 
 # Create the service object
-service = IBM::ML::Local.new(LOCAL_HOST, LOCAL_USERNAME, LOCAL_PASSWORD)
+ml_service = IBM::ML::Local.new(LOCAL_HOST, LOCAL_USERNAME, LOCAL_PASSWORD)
 
 # Fetch an authentication token
-pp service.fetch_token
+pp ml_service.fetch_token
 
 # Get a score for the given deployment and record
-pp service.get_score(LOCAL_DEPLOYMENT_ID, record)
+pp ml_service.score(LOCAL_DEPLOYMENT_ID, record)
 ```
 
 ## Development

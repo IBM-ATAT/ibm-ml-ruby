@@ -12,7 +12,7 @@ module IBM
         @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
 
-      def get_score(deployment_id, hash)
+      def score(deployment_id, hash)
         url = URI("https://#{@host}/v2/scoring/online/#{deployment_id}")
 
         # noinspection RubyStringKeysInHashInspection

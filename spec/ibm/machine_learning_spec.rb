@@ -15,7 +15,7 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
 
   it 'gets models from Watson Machine Learning' do
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
-    result  = service.published_models
+    result  = service.models
     expect(result).to be_a Hash
     expect(result).to include 'resources'
     models = result['resources']
@@ -47,7 +47,7 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
 
   it 'gets specific deployment by name from Watson Machine Learning' do
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
-    result  = service.get_deployment_by_name 'For Testing: Deployed aPhone ML Model'
+    result  = service.deployment_by_name 'For Testing: Deployed aPhone ML Model'
     expect(result).to be_a Hash
     expect(result).to include 'metadata'
     expect(result).to include 'entity'
@@ -57,7 +57,7 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
     service.deployments['resources'].each do |deployment|
       model_guid = deployment['entity']['published_model']['guid']
-      model_result = service.get_model model_guid
+      model_result = service.model model_guid
       expect(model_result).to include 'entity'
       expect(model_result['entity']).to include 'input_data_schema'
       expect(model_result['entity']).to include 'deployments'
@@ -70,7 +70,7 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     service.deployments['resources'].each do |deployment|
       model_guid = deployment['entity']['published_model']['guid']
       deployment_guid = deployment['metadata']['guid']
-      score = service.get_score model_guid, deployment_guid, record
+      score = service.score model_guid, deployment_guid, record
       expect(score).to be_a(Hash)
       expect(score.keys).to include 'fields'
       expect(score.keys).to include 'values'
@@ -81,7 +81,7 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
   it 'gets a score result by deployment name from Watson Machine Learning' do
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
     record  = JSON.parse(ENV['RECORD'])
-    score = service.get_score_by_name 'For Testing: Deployed aPhone ML Model', record
+    score = service.score_by_name 'For Testing: Deployed aPhone ML Model', record
     expect(score).to be_a(Hash)
     expect(score.keys).to include 'fields'
     expect(score.keys).to include 'values'
@@ -101,7 +101,7 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     service = IBM::ML::Local.new ENV['LOCAL_HOST'],
                                  ENV['LOCAL_USERNAME'],
                                  ENV['LOCAL_PASSWORD']
-    score   = service.get_score ENV['LOCAL_DEPLOYMENT_ID'], record
+    score   = service.score ENV['LOCAL_DEPLOYMENT_ID'], record
     expect(score).to be_a(Hash)
   end
 
@@ -110,7 +110,7 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     service = IBM::ML::Local.new ENV['LOCAL_HOST'],
                                  ENV['LOCAL_USERNAME'],
                                  ENV['LOCAL_PASSWORD']
-    expect { service.get_score('blah', record) }.to raise_error(IBM::ML::ScoringError)
+    expect { service.score('blah', record) }.to raise_error(IBM::ML::ScoringError)
   end
 
   # it 'gets a token from Machine Learning for z/OS' do
