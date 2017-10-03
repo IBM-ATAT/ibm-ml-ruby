@@ -19,21 +19,20 @@ module IBM
       end
 
       def deployment_by_name(name)
-        deployments['resources'].each do |deployment|
-          return deployment if deployment['entity']['name'] == name
-        end
+        find_by_name(deployments, name)
       end
 
       def model(model_id)
         get_request "https://#{@host}/v2/published_models/#{model_id}", 'entity'
       end
 
+      def model_by_name(name)
+        find_by_name(models, name)
+      end
+
       def score_by_name(name, record)
-        deployments['resources'].each do |deployment|
-          if deployment['entity']['name'] == name
-            return score(deployment['entity']['published_model']['guid'], deployment['metadata']['guid'], record)
-          end
-        end
+        deployment = find_by_name(deployments, name)
+        score(deployment['entity']['published_model']['guid'], deployment['metadata']['guid'], record)
       end
 
       def score(model_id, deployment_id, record)
@@ -74,6 +73,12 @@ module IBM
 
       def process_ldap_response(response)
         JSON.parse(response.read_body)['token']
+      end
+
+      def find_by_name(response, name)
+        response['resources'].each do |resource|
+          return resource if resource['entity']['name'] == name
+        end
       end
     end
   end

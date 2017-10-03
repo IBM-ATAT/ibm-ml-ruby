@@ -63,8 +63,11 @@ ml_service = IBM::ML::Cloud.new(CLOUD_USERNAME, CLOUD_PASSWORD)
 # Fetch an authentication token
 pp ml_service.fetch_token
 
-# Query models and deployments
+# Query models
 pp ml_service.models
+pp ml_service.model_by_name('aPhone ML Model')
+
+# Query deployments
 pp ml_service.deployments
 pp ml_service.deployment_by_name('Deployed aPhone ML Model')
 
