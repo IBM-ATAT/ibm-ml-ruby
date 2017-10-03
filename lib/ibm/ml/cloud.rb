@@ -18,8 +18,8 @@ module IBM
         get_request "https://#{@host}/v2/deployments", 'resources'
       end
 
-      def deployment(guid)
-        find_by_id(deployments, guid)
+      def deployment(deployment_id)
+        find_by_id(deployments, deployment_id)
       end
 
       def deployment_by_name(name)
@@ -40,27 +40,16 @@ module IBM
       end
 
       def score(deployment_id, record)
-        deployment = deployment(deployment_id)
-        url = URI(deployment['entity']['scoring_href'])
+        deployment = deployment(deployment_id)['entity']
+        model_fields = model(deployment['published_model']['guid'])['entity']['input_data_schema']['fields']
 
-        header = {
-          'authorization' => "Bearer #{fetch_token}",
-          'content-type'  => 'application/json'
-        }
-
-        model_id = deployment['entity']['published_model']['guid']
-        model_fields = model(model_id)['entity']['input_data_schema']['fields']
-        request      = Net::HTTP::Post.new(url, header)
-        request.body = {
+        response = post_request deployment['scoring_href'], {
           fields: model_fields.map { |field| field['name'] },
           values: [record.values]
         }.to_json
 
-        response = @http.request(request)
-
-        body = JSON.parse(response.read_body)
-        return body if body.key?('fields') && body.key?('values')
-        raise(body['message'] + ' : ' + body['description'])
+        raise(response['message'] + ' : ' + response['description']) if response.key?('message')
+        response
       end
 
       def query_score(score, field)
@@ -97,7 +86,6 @@ module IBM
           return resource if resource['entity']['name'] == name
         end
       end
-
     end
   end
 end

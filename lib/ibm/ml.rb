@@ -32,13 +32,30 @@ module IBM
 
     def get_request(addr, top_key)
       url     = URI(addr)
-      header  = { 'authorization' => "Bearer #{fetch_token}" }
+      header  = auth_header
       request = Net::HTTP::Get.new url, header
 
       response = @http.request(request)
 
       body = JSON.parse(response.read_body)
       body.key?(top_key) ? body : raise(body['message'])
+    end
+
+    def auth_header
+      { 'authorization' => "Bearer #{fetch_token}" }
+    end
+
+    def post_request(url, body)
+      request = Net::HTTP::Post.new(url, post_header)
+      request.body = body
+      response = @http.request(request)
+      JSON.parse(response.read_body)
+    end
+
+    def post_header
+      header = auth_header
+      header['content-type'] = 'application/json'
+      header
     end
   end
 end

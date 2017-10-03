@@ -72,7 +72,7 @@ pp ml_service.deployment(DEPLOYMENT_ID)
 pp ml_service.deployment_by_name('Deployed aPhone ML Model')
 
 # Get a score for the given deployment and record
-pp ml_service.score(DEPLOYMENT_ID, record)
+score = ml_service.score(DEPLOYMENT_ID, record)
 score = ml_service.score_by_name('Deployed aPhone ML Model', record)
 pp score
 puts
