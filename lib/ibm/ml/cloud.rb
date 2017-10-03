@@ -55,7 +55,7 @@ module IBM
       def query_score(score, field)
         fields = score['fields'].map(&:upcase)
         index = fields.index(field.upcase)
-        score['values'].map { |record| record[index] }
+        score['values'].map { |record| record[index] }[0]
       end
 
       private

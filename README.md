@@ -64,20 +64,22 @@ pp ml_service.fetch_token
 
 # Query models
 pp ml_service.models
-pp ml_service.model_by_name('aPhone ML Model')
+pp ml_service.model_by_name('ML Model')
 
 # Query deployments
 pp ml_service.deployments
 pp ml_service.deployment(DEPLOYMENT_ID)
-pp ml_service.deployment_by_name('Deployed aPhone ML Model')
+pp ml_service.deployment_by_name('Deployed ML Model')
 
 # Get a score for the given deployment and record
 score = ml_service.score(DEPLOYMENT_ID, record)
-score = ml_service.score_by_name('Deployed aPhone ML Model', record)
+score = ml_service.score_by_name('Deployed ML Model', record)
 pp score
+prediction = ml_service.query_score(score, 'prediction')
+probability = ml_service.query_score(score, 'probability')[prediction]
 puts
-puts "Prediction = #{ml_service.query_score(score, 'prediction')}"
-puts "Probability = #{ml_service.query_score(score, 'probability')}"
+puts "Prediction = #{prediction == 1}"
+puts "Probability = #{(probability * 100).round(1)}%"
 ```
 
 ### Local

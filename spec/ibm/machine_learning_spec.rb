@@ -106,17 +106,16 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
 
       expect(score['fields']).to include 'prediction'
       prediction = service.query_score(score, 'predicTion')
-      expect(prediction).to be_a(Array)
-      expect(prediction[0]).to be(1.0).or(0.0)
+      expect(prediction).to be_a(Numeric)
+      expect(prediction).to be(1.0).or(0.0)
 
       expect(score['fields']).to include 'probability'
       probability = service.query_score(score, 'proBability')
       expect(probability).to be_a(Array)
-      expect(probability[0]).to be_a(Array)
-      expect(probability[0][0]).to be >= 0.0
-      expect(probability[0][0]).to be <= 1.0
-      expect(probability[0][1]).to be >= 0.0
-      expect(probability[0][1]).to be <= 1.0
+      expect(probability[0]).to be >= 0.0
+      expect(probability[0]).to be <= 1.0
+      expect(probability[1]).to be >= 0.0
+      expect(probability[1]).to be <= 1.0
     end
   end
 
