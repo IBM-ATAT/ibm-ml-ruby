@@ -10,14 +10,14 @@ Currently supports:
 
 ## Installation
 
-#### With Gem
+### With Gem
 After [installing Ruby](https://www.ruby-lang.org/en/documentation/installation/) >= 2.0:
 
 ```bash
 $ gem install ibm-ml
 ```
 
-#### With Bundler
+### With Bundler
 Add this line to your application's Gemfile:
 
 ```ruby
@@ -32,12 +32,12 @@ $ bundle install
 
 ## Usage
 
-#### Setup
+### Setup
 ```ruby
 require 'ibm/ml'
 require 'pp'
 
-# example input record to score 
+# input record to score 
 record = {
   GENDER:        'M',
   AGEGROUP:      '45-54',
@@ -50,30 +50,53 @@ record = {
 }
 ```
 
-#### Cloud
+### Cloud 
 ```ruby
-USERNAME =      # ML service username
-PASSWORD =      # ML service password
-MODEL_ID =      # model ID
-DEPLOYMENT_ID = # deployment ID
+CLOUD_USERNAME  =  # WML service username
+CLOUD_PASSWORD  =  # WML service password
+DEPLOYMENT_ID   =  # deployment ID
 
-service = IBM::ML::Cloud.new(USERNAME, PASSWORD)
-pp service.fetch_token
-pp service.published_models
-pp service.deployments
-pp service.get_score(MODEL_ID, DEPLOYMENT_ID, record)
+# Create the service object
+ml_service = IBM::ML::Cloud.new(CLOUD_USERNAME, CLOUD_PASSWORD)
+
+# Fetch an authentication token
+pp ml_service.fetch_token
+
+# Query models
+pp ml_service.models
+pp ml_service.model_by_name('ML Model')
+
+# Query deployments
+pp ml_service.deployments
+pp ml_service.deployment(DEPLOYMENT_ID)
+pp ml_service.deployment_by_name('Deployed ML Model')
+
+# Get a score for the given deployment and record
+score = ml_service.score(DEPLOYMENT_ID, record)
+score = ml_service.score_by_name('Deployed ML Model', record)
+pp score
+prediction = ml_service.query_score(score, 'prediction')
+probability = ml_service.query_score(score, 'probability')[prediction]
+puts
+puts "Prediction = #{prediction == 1}"
+puts "Probability = #{(probability * 100).round(1)}%"
 ```
 
-#### Local
+### Local
 ```ruby
-HOST =          # DSX Local hostname / IP address
-USERNAME =      # DSX Local username
-PASSWORD =      # DSX Local password
-DEPLOYMENT_ID = # deployment ID
+LOCAL_HOST      =  # DSX Local hostname / IP address
+LOCAL_USERNAME  =  # DSX Local username
+LOCAL_PASSWORD  =  # DSX Local password
+DEPLOYMENT_ID   =  # deployment ID
 
-service = IBM::ML::Local.new(HOST, USERNAME, PASSWORD)
-pp service.fetch_token
-pp service.get_score(DEPLOYMENT_ID, record)
+# Create the service object
+ml_service = IBM::ML::Local.new(LOCAL_HOST, LOCAL_USERNAME, LOCAL_PASSWORD)
+
+# Fetch an authentication token
+pp ml_service.fetch_token
+
+# Get a score for the given deployment and record
+pp ml_service.score(DEPLOYMENT_ID, record)
 ```
 
 ## Development
