@@ -34,6 +34,10 @@ module IBM
         end
       end
 
+      def query_score(score, field)
+        query_ml_score(score, field, 'records')
+      end
+
       private
 
       def ldap_url

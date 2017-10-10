@@ -68,18 +68,12 @@ pp ml_service.model_by_name('ML Model')
 
 # Query deployments
 pp ml_service.deployments
-pp ml_service.deployment(DEPLOYMENT_ID)
-pp ml_service.deployment_by_name('Deployed ML Model')
+pp ml_service.deployment(DEPLOYMENT_ID)                 #    identify by deployment ID
+pp ml_service.deployment_by_name('Deployed ML Model')   # OR identify by deployment name
 
 # Get a score for the given deployment and record
-score = ml_service.score(DEPLOYMENT_ID, record)
-score = ml_service.score_by_name('Deployed ML Model', record)
-pp score
-prediction = ml_service.query_score(score, 'prediction')
-probability = ml_service.query_score(score, 'probability')[prediction]
-puts
-puts "Prediction = #{prediction == 1}"
-puts "Probability = #{(probability * 100).round(1)}%"
+score = ml_service.score(DEPLOYMENT_ID, record)                 #    identify by deployment ID
+score = ml_service.score_by_name('Deployed ML Model', record)   # OR identify by deployment name
 ```
 
 ### Local
@@ -96,7 +90,20 @@ ml_service = IBM::ML::Local.new(LOCAL_HOST, LOCAL_USERNAME, LOCAL_PASSWORD)
 pp ml_service.fetch_token
 
 # Get a score for the given deployment and record
-pp ml_service.score(DEPLOYMENT_ID, record)
+score = ml_service.score(DEPLOYMENT_ID, record)
+```
+
+### Print Score
+```ruby
+pp score  # print full score hash
+
+# extract prediction and probability from score
+prediction = ml_service.query_score(score, 'prediction')
+probability = ml_service.query_score(score, 'probability')[prediction]
+
+puts
+puts "Prediction = #{prediction == 1}"                  # print binary 1/0 prediction as true/false
+puts "Probability = #{(probability * 100).round(1)}%"   # print probability value as percentage
 ```
 
 ## Development

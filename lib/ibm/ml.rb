@@ -28,6 +28,12 @@ module IBM
       process_ldap_response(response)
     end
 
+    def query_ml_score(score, field, values_key)
+      fields = score['fields'].map(&:upcase)
+      index = fields.index(field.upcase)
+      score[values_key].map { |record| record[index] }[0]
+    end
+
     private
 
     def get_request(addr, top_key)
