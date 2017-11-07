@@ -12,7 +12,7 @@ module IBM
         @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
 
-      def score(deployment_id, hash)
+      def score(deployment_id, record)
         url = URI("https://#{@host}/v2/scoring/online/#{deployment_id}")
 
         # noinspection RubyStringKeysInHashInspection
@@ -22,7 +22,7 @@ module IBM
         }
 
         request      = Net::HTTP::Post.new(url, header)
-        request.body = { fields: hash.keys, records: [hash.values] }.to_json
+        request.body = { fields: record.keys, records: [record.values] }.to_json
 
         response = @http.request(request)
 
