@@ -77,6 +77,7 @@ module IBM
         response['resources'].each do |resource|
           return resource if resource['metadata']['guid'] == guid
         end
+        raise(QueryError, "Could not find resource with id \"#{guid}\"")
       end
 
       def find_by_name(response, name)

@@ -20,6 +20,15 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     end.to raise_error(RuntimeError, 'Net::HTTPUnauthorized')
   end
 
+  it 'gets an error when credentials are valid but deployment does not exist' do
+    service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
+    record = JSON.parse(ENV['RECORD'])
+    expect do
+      p record
+      service.score 'bad_deployment_guid', record
+    end.to raise_error(IBM::ML::QueryError, 'Could not find resource with id "bad_deployment_guid"')
+  end
+
   it 'gets models from Watson Machine Learning' do
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
     result  = service.models
