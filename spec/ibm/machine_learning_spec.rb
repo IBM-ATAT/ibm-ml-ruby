@@ -13,6 +13,13 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     expect(token).to be_a(String)
   end
 
+  it 'gets HTTPUnauthorized when fetching token with bad credentials' do
+    service = IBM::ML::Cloud.new 'incorrect_CLOUD_USERNAME', 'incorrect_CLOUD_PASSWORD'
+    expect do
+      service.fetch_token
+    end.to raise_error(RuntimeError, 'Net::HTTPUnauthorized')
+  end
+
   it 'gets models from Watson Machine Learning' do
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
     result  = service.models
@@ -159,6 +166,11 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
     expect(probability[0]).to be <= 1.0
     expect(probability[1]).to be >= 0.0
     expect(probability[1]).to be <= 1.0
+  end
+
+  it 'gets Net::HTTPNotFound when fetching token from hostname that is not a DSX instance' do
+    service = IBM::ML::Local.new 'www.ibm.com', 'incorrect_CLOUD_USERNAME', 'incorrect_CLOUD_PASSWORD'
+    expect { service.fetch_token }.to raise_error(RuntimeError, 'Net::HTTPNotFound')
   end
 
   it 'handles bad deployment guid correctly for IBM Machine Learning Local' do
