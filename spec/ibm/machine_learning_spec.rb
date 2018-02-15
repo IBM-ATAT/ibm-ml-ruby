@@ -108,7 +108,6 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
   end
 
   it 'gets a score result from Watson Machine Learning' do
-    
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
     service.deployments['resources'].each do |deployment|
       deployment_guid = deployment['metadata']['guid']
@@ -135,7 +134,7 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
 
   it 'gets a score result by deployment name from Watson Machine Learning' do
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
-    
+
     score = service.score_by_name 'For Testing: Deployed aPhone ML Model', RECORD
     expect(score).to be_a(Hash)
     expect(score.keys).to include 'fields'
@@ -145,9 +144,9 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
 
   it 'gets a score result despite hash being out of order' do
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
-    
-    (1..3).each do
-      shuffled_record  = RECORD.to_a.shuffle.to_h
+
+    3.times do
+      shuffled_record = RECORD.to_a.shuffle.to_h
       score = service.score_by_name 'For Testing: Deployed aPhone ML Model', shuffled_record
       expect(score).to be_a(Hash)
       expect(score.keys).to include 'fields'
@@ -155,7 +154,7 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
       expect(score['fields']).to include 'prediction'
     end
   end
-  
+
   # it 'gets a token from IBM Machine Learning Local' do
   #   service = IBM::ML::Local.new ENV['LOCAL_HOST'],
   #                                ENV['LOCAL_USERNAME'],
@@ -163,9 +162,9 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
   #   token   = service.fetch_token
   #   expect(token).to be_a(String)
   # end
-  
+
   # it 'gets a score result from IBM Machine Learning Local' do
-  #   
+  #
   #   service = IBM::ML::Local.new ENV['LOCAL_HOST'],
   #                                ENV['LOCAL_USERNAME'],
   #                                ENV['LOCAL_PASSWORD']
@@ -173,12 +172,12 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
   #   expect(score).to be_a(Hash)
   #   expect(score.keys).to include 'fields'
   #   expect(score.keys).to include 'records'
-  # 
+  #
   #   expect(score['fields']).to include 'prediction'
   #   prediction = service.query_score(score, 'predicTion')
   #   expect(prediction).to be_a(Numeric)
   #   expect(prediction).to be(1.0).or(0.0)
-  # 
+  #
   #   expect(score['fields']).to include 'probability'
   #   probability = service.query_score(score, 'proBability')
   #   expect(probability).to be_a(Array)
@@ -189,14 +188,13 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
   # end
 
   it 'gets Net::HTTPNotFound when fetching token from hostname that is not a DSX instance' do
-    service = IBM::ML::Local.new 'www.ibm.com', 
-                                 'incorrect_CLOUD_USERNAME', 
+    service = IBM::ML::Local.new 'www.ibm.com',
+                                 'incorrect_CLOUD_USERNAME',
                                  'incorrect_CLOUD_PASSWORD'
     expect { service.fetch_token }.to raise_error(RuntimeError, 'Net::HTTPNotFound')
   end
 
   it 'handles authentication error correctly' do
-  
     service = IBM::ML::Local.new ENV['LOCAL_HOST'],
                                  'incorrect_CLOUD_USERNAME',
                                  'incorrect_CLOUD_PASSWORD'
@@ -204,7 +202,7 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
   end
 
   # it 'handles bad deployment guid correctly for IBM Machine Learning Local' do
-  #   
+  #
   #   service = IBM::ML::Local.new ENV['LOCAL_HOST'],
   #                                ENV['LOCAL_USERNAME'],
   #                                ENV['LOCAL_PASSWORD']
@@ -221,5 +219,5 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
   # end
 end
 
-RECORD = { "GEndER"=>"M", "AGeGrOUP"=>"45-54", "EDUCaTION"=>"Doctorate", "PROFEsSION"=>"Executive",
-           "IncOME"=>200000, "SWItCHER"=>0, "LASTPURCHASE"=>3, "ANNuAL_SPEND"=>1200 }
+RECORD = { 'GEndER' => 'M', 'AGeGrOUP' => '45-54', 'EDUCaTION' => 'Doctorate', 'PROFEsSION' => 'Executive',
+           'IncOME' => 200_000, 'SWItCHER' => 0, 'LASTPURCHASE' => 3, 'ANNuAL_SPEND' => 1200 }.freeze

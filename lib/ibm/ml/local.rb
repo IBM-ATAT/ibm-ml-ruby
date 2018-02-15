@@ -1,4 +1,3 @@
-
 module IBM
   module ML
     # Class for calling Local Machine Learning scoring service
