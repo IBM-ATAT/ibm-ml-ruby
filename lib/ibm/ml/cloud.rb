@@ -42,10 +42,14 @@ module IBM
       def score(deployment_id, record)
         deployment = deployment(deployment_id)['entity']
         model_fields = model(deployment['published_model']['guid'])['entity']['input_data_schema']['fields']
-
+        
+        field_names = model_fields.map { |field| field['name'] }
+        cleaned_rec = record.to_a.map { |kv| [kv[0].downcase, kv[1]] }.to_h
+        record_values = field_names.map { |name| cleaned_rec[name.downcase] }
+        
         response = post_request deployment['scoring_href'], {
-          fields: model_fields.map { |field| field['name'] },
-          values: [record.values]
+          fields: field_names,
+          values: [record_values]
         }.to_json
 
         raise(response['message'] + ' : ' + response['description']) if response.key?('message')

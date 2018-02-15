@@ -22,10 +22,8 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
 
   it 'gets an error when credentials are valid but deployment does not exist' do
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
-    record = JSON.parse(ENV['RECORD'])
     expect do
-      p record
-      service.score 'bad_deployment_guid', record
+      service.score 'bad_deployment_guid', RECORD
     end.to raise_error(IBM::ML::QueryError, 'Could not find resource with id "bad_deployment_guid"')
   end
 
@@ -110,12 +108,12 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
   end
 
   it 'gets a score result from Watson Machine Learning' do
-    record  = JSON.parse(ENV['RECORD'])
+    
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
     service.deployments['resources'].each do |deployment|
       deployment_guid = deployment['metadata']['guid']
 
-      score = service.score deployment_guid, record
+      score = service.score deployment_guid, RECORD
       expect(score).to be_a(Hash)
       expect(score.keys).to include 'fields'
       expect(score.keys).to include 'values'
@@ -137,58 +135,81 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
 
   it 'gets a score result by deployment name from Watson Machine Learning' do
     service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
-    record  = JSON.parse(ENV['RECORD'])
-    score = service.score_by_name 'For Testing: Deployed aPhone ML Model', record
+    
+    score = service.score_by_name 'For Testing: Deployed aPhone ML Model', RECORD
     expect(score).to be_a(Hash)
     expect(score.keys).to include 'fields'
     expect(score.keys).to include 'values'
     expect(score['fields']).to include 'prediction'
   end
 
-  it 'gets a token from IBM Machine Learning Local' do
-    service = IBM::ML::Local.new ENV['LOCAL_HOST'],
-                                 ENV['LOCAL_USERNAME'],
-                                 ENV['LOCAL_PASSWORD']
-    token   = service.fetch_token
-    expect(token).to be_a(String)
+  it 'gets a score result despite hash being out of order' do
+    service = IBM::ML::Cloud.new ENV['CLOUD_USERNAME'], ENV['CLOUD_PASSWORD']
+    
+    (1..3).each do
+      shuffled_record  = RECORD.to_a.shuffle.to_h
+      score = service.score_by_name 'For Testing: Deployed aPhone ML Model', shuffled_record
+      expect(score).to be_a(Hash)
+      expect(score.keys).to include 'fields'
+      expect(score.keys).to include 'values'
+      expect(score['fields']).to include 'prediction'
+    end
   end
-
-  it 'gets a score result from IBM Machine Learning Local' do
-    record  = JSON.parse(ENV['RECORD'])
-    service = IBM::ML::Local.new ENV['LOCAL_HOST'],
-                                 ENV['LOCAL_USERNAME'],
-                                 ENV['LOCAL_PASSWORD']
-    score   = service.score ENV['LOCAL_DEPLOYMENT_ID'], record
-    expect(score).to be_a(Hash)
-    expect(score.keys).to include 'fields'
-    expect(score.keys).to include 'records'
-
-    expect(score['fields']).to include 'prediction'
-    prediction = service.query_score(score, 'predicTion')
-    expect(prediction).to be_a(Numeric)
-    expect(prediction).to be(1.0).or(0.0)
-
-    expect(score['fields']).to include 'probability'
-    probability = service.query_score(score, 'proBability')
-    expect(probability).to be_a(Array)
-    expect(probability[0]).to be >= 0.0
-    expect(probability[0]).to be <= 1.0
-    expect(probability[1]).to be >= 0.0
-    expect(probability[1]).to be <= 1.0
-  end
+  
+  # it 'gets a token from IBM Machine Learning Local' do
+  #   service = IBM::ML::Local.new ENV['LOCAL_HOST'],
+  #                                ENV['LOCAL_USERNAME'],
+  #                                ENV['LOCAL_PASSWORD']
+  #   token   = service.fetch_token
+  #   expect(token).to be_a(String)
+  # end
+  
+  # it 'gets a score result from IBM Machine Learning Local' do
+  #   
+  #   service = IBM::ML::Local.new ENV['LOCAL_HOST'],
+  #                                ENV['LOCAL_USERNAME'],
+  #                                ENV['LOCAL_PASSWORD']
+  #   score   = service.score ENV['LOCAL_DEPLOYMENT_ID'], RECORD
+  #   expect(score).to be_a(Hash)
+  #   expect(score.keys).to include 'fields'
+  #   expect(score.keys).to include 'records'
+  # 
+  #   expect(score['fields']).to include 'prediction'
+  #   prediction = service.query_score(score, 'predicTion')
+  #   expect(prediction).to be_a(Numeric)
+  #   expect(prediction).to be(1.0).or(0.0)
+  # 
+  #   expect(score['fields']).to include 'probability'
+  #   probability = service.query_score(score, 'proBability')
+  #   expect(probability).to be_a(Array)
+  #   expect(probability[0]).to be >= 0.0
+  #   expect(probability[0]).to be <= 1.0
+  #   expect(probability[1]).to be >= 0.0
+  #   expect(probability[1]).to be <= 1.0
+  # end
 
   it 'gets Net::HTTPNotFound when fetching token from hostname that is not a DSX instance' do
-    service = IBM::ML::Local.new 'www.ibm.com', 'incorrect_CLOUD_USERNAME', 'incorrect_CLOUD_PASSWORD'
+    service = IBM::ML::Local.new 'www.ibm.com', 
+                                 'incorrect_CLOUD_USERNAME', 
+                                 'incorrect_CLOUD_PASSWORD'
     expect { service.fetch_token }.to raise_error(RuntimeError, 'Net::HTTPNotFound')
   end
 
-  it 'handles bad deployment guid correctly for IBM Machine Learning Local' do
-    record  = JSON.parse(ENV['RECORD'])
+  it 'handles authentication error correctly' do
+  
     service = IBM::ML::Local.new ENV['LOCAL_HOST'],
-                                 ENV['LOCAL_USERNAME'],
-                                 ENV['LOCAL_PASSWORD']
-    expect { service.score('blah', record) }.to raise_error(IBM::ML::ScoringError)
+                                 'incorrect_CLOUD_USERNAME',
+                                 'incorrect_CLOUD_PASSWORD'
+    expect { service.score('blah', RECORD) }.to raise_error(RuntimeError, 'Net::HTTPUnauthorized')
   end
+
+  # it 'handles bad deployment guid correctly for IBM Machine Learning Local' do
+  #   
+  #   service = IBM::ML::Local.new ENV['LOCAL_HOST'],
+  #                                ENV['LOCAL_USERNAME'],
+  #                                ENV['LOCAL_PASSWORD']
+  #   expect { service.score('blah', RECORD) }.to raise_error(IBM::ML::ScoringError)
+  # end
 
   # it 'gets a token from Machine Learning for z/OS' do
   #   service = IBM::MachineLearning::Zos.new ENV['MLZ_USERNAME'],
@@ -199,3 +220,6 @@ RSpec.describe IBM::ML do # rubocop:disable Metrics/BlockLength
   #   expect(token).to be_a(String)
   # end
 end
+
+RECORD = { "GEndER"=>"M", "AGeGrOUP"=>"45-54", "EDUCaTION"=>"Doctorate", "PROFEsSION"=>"Executive",
+           "IncOME"=>200000, "SWItCHER"=>0, "LASTPURCHASE"=>3, "ANNuAL_SPEND"=>1200 }
