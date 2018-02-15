@@ -11,7 +11,7 @@ Currently supports:
 ## Installation
 
 ### With Gem
-After [installing Ruby](https://www.ruby-lang.org/en/documentation/installation/) >= 2.0:
+After [installing Ruby](https://www.ruby-lang.org/en/documentation/installation/) >= 2.3:
 
 ```bash
 $ gem install ibm-ml
