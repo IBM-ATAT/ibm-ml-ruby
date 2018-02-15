@@ -1,6 +1,6 @@
 # IBM::ML
 [![Gem Version](https://badge.fury.io/rb/ibm-ml.svg)](https://badge.fury.io/rb/ibm-ml)
-[![Build Status](https://travis-ci.org/IBM-ATAT/ibm-ml-ruby.svg?branch=master)](https://travis-ci.org/IBM-ATAT/ibm-ml-ruby)
+[![Build Status](https://travis-ci.org/IBM-DSE/ibm-ml-ruby.svg?branch=master)](https://travis-ci.org/IBM-DSE/ibm-ml-ruby)
 
 A Ruby gem to invoke the IBM Machine Learning service REST API.
 
@@ -11,7 +11,7 @@ Currently supports:
 ## Installation
 
 ### With Gem
-After [installing Ruby](https://www.ruby-lang.org/en/documentation/installation/) >= 2.0:
+After [installing Ruby](https://www.ruby-lang.org/en/documentation/installation/) >= 2.3:
 
 ```bash
 $ gem install ibm-ml
@@ -114,5 +114,5 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at [https://github.com/IBM-ATAT/ibm-ml-ruby](https://github.com/IBM-ATAT/ibm-ml-ruby).
+Bug reports and pull requests are welcome on GitHub at [https://github.com/IBM-DSE/ibm-ml-ruby](https://github.com/IBM-DSE/ibm-ml-ruby).
 

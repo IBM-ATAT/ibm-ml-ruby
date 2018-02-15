@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'Simplifies development of applications using an IBM Machine Learning service '\
                        'by providing methods for getting deployments and calling them. '\
                        'Operates with both IBM Watson Machine Learning as well as Machine Learning on DSX Local.'
-  spec.homepage      = 'https://github.com/IBM-ATAT/ibm-ml-ruby'
+  spec.homepage      = 'https://github.com/IBM-DSE/ibm-ml-ruby'
 
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})

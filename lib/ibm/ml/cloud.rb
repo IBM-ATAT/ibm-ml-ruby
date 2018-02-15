@@ -41,11 +41,16 @@ module IBM
 
       def score(deployment_id, record)
         deployment = deployment(deployment_id)['entity']
-        model_fields = model(deployment['published_model']['guid'])['entity']['input_data_schema']['fields']
+        field_names = model_of_deployment(deployment)['entity']['input_data_schema']['fields'].map do |f|
+          f['name']
+        end
+
+        cleaned_rec = record.map { |k, v| [k.downcase, v] }.to_h
+        record_values = field_names.map { |name| cleaned_rec[name.downcase] }
 
         response = post_request deployment['scoring_href'], {
-          fields: model_fields.map { |field| field['name'] },
-          values: [record.values]
+          fields: field_names,
+          values: [record_values]
         }.to_json
 
         raise(response['message'] + ' : ' + response['description']) if response.key?('message')
@@ -77,6 +82,7 @@ module IBM
         response['resources'].each do |resource|
           return resource if resource['metadata']['guid'] == guid
         end
+        raise(QueryError, "Could not find resource with id \"#{guid}\"")
       end
 
       def find_by_name(response, name)
@@ -84,6 +90,10 @@ module IBM
           return resource if resource['entity']['name'] == name
         end
         raise(QueryError, "Could not find resource with name \"#{name}\"")
+      end
+
+      def model_of_deployment(deployment)
+        model(deployment['published_model']['guid'])
       end
     end
 
