@@ -9,7 +9,8 @@ module IBM
     require_relative 'ml/local'
     require_relative 'ml/zos'
 
-    def initialize(username, password)
+    def initialize(host, username, password)
+      @host         = host
       @username     = username
       @password     = password
       uri           = URI("https://#{@host}")
@@ -18,19 +19,25 @@ module IBM
     end
 
     def fetch_token
-      uri          = URI.parse ldap_url
-      http         = Net::HTTP.new uri.host, uri.port
-      http.use_ssl = uri.scheme == 'https'
+      url      = URI(ldap_url)
+      request  = ldap_request(url)
+      response = @http.request request
 
-      response = http.request ldap_request(http, uri)
+      if response.is_a? Net::HTTPClientError
+        begin
+          body = JSON.parse(response.read_body)
+          raise(AuthError, body['errors'][0]['message']) if body.key?('errors')
+        rescue JSON::ParserError
+          raise response.class.to_s
+        end
+      end
 
-      raise response.class.to_s if response.is_a? Net::HTTPClientError
       process_ldap_response(response)
     end
 
     def query_ml_score(score, field, values_key)
       fields = score['fields'].map(&:upcase)
-      index = fields.index(field.upcase)
+      index  = fields.index(field.upcase)
       score[values_key].map { |record| record[index] }[0]
     end
 
@@ -52,14 +59,14 @@ module IBM
     end
 
     def post_request(url, body)
-      request = Net::HTTP::Post.new(url, post_header)
+      request      = Net::HTTP::Post.new(url, post_header)
       request.body = body
-      response = @http.request(request)
+      response     = @http.request(request)
       JSON.parse(response.read_body)
     end
 
     def post_header
-      header = auth_header
+      header                 = auth_header
       header['content-type'] = 'application/json'
       header
     end

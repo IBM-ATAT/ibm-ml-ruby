@@ -4,18 +4,18 @@ module IBM
     class Cloud
       include ML
 
-      def initialize(username, password)
-        @host = 'ibm-watson-ml.mybluemix.net'
-        super
+      def initialize(username, password, instance_id)
+        super('ibm-watson-ml.mybluemix.net', username, password)
+        @instance_id = instance_id
         @http.use_ssl = true
       end
 
       def models
-        get_request "https://#{@host}/v2/published_models", 'resources'
+        get_request "#{instance_url}/published_models", 'resources'
       end
 
       def deployments
-        get_request "https://#{@host}/v2/deployments", 'resources'
+        get_request "#{instance_url}/deployments", 'resources'
       end
 
       def deployment(deployment_id)
@@ -27,7 +27,7 @@ module IBM
       end
 
       def model(model_id)
-        get_request "https://#{@host}/v2/published_models/#{model_id}", 'entity'
+        get_request "#{instance_url}/published_models/#{model_id}", 'entity'
       end
 
       def model_by_name(name)
@@ -40,15 +40,15 @@ module IBM
       end
 
       def score(deployment_id, record)
-        deployment = deployment(deployment_id)['entity']
+        deployment  = deployment(deployment_id)['entity']
         field_names = model_of_deployment(deployment)['entity']['input_data_schema']['fields'].map do |f|
           f['name']
         end
 
-        cleaned_rec = record.map { |k, v| [k.downcase, v] }.to_h
+        cleaned_rec   = record.map { |k, v| [k.downcase, v] }.to_h
         record_values = field_names.map { |name| cleaned_rec[name.downcase] }
 
-        response = post_request deployment['scoring_href'], {
+        response = post_request deployment['scoring_url'], {
           fields: field_names,
           values: [record_values]
         }.to_json
@@ -64,12 +64,15 @@ module IBM
       private
 
       def ldap_url
-        "https://#{@host}/v2/identity/token"
+        "https://#{@host}/v3/identity/token"
       end
 
-      def ldap_request(http, url)
-        http.use_ssl = true
-        request      = Net::HTTP::Get.new url
+      def instance_url
+        "https://#{@host}/v3/wml_instances/#{@instance_id}"
+      end
+
+      def ldap_request(url)
+        request = Net::HTTP::Get.new(url)
         request.basic_auth @username, @password
         request
       end
@@ -97,6 +100,8 @@ module IBM
       end
     end
 
+    class AuthError < StandardError
+    end
     class QueryError < StandardError
     end
   end
