@@ -18,7 +18,7 @@ module IBM
         "http://#{@host}:#{@ldap_port}/v2/identity/ldap"
       end
 
-      def ldap_request(_, url)
+      def ldap_request(url)
         request = Net::HTTP::Post.new(url)
         request.set_content_type 'application/json'
         request.body = { username: @username, password: @password }.to_json

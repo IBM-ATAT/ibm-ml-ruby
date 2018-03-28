@@ -52,12 +52,13 @@ record = {
 
 ### Cloud 
 ```ruby
-CLOUD_USERNAME  =  # WML service username
-CLOUD_PASSWORD  =  # WML service password
-DEPLOYMENT_ID   =  # deployment ID
+CLOUD_USERNAME    =  # WML service username
+CLOUD_PASSWORD    =  # WML service password
+CLOUD_INSTANCE_ID =  # WML instance ID
+DEPLOYMENT_ID     =  # deployment ID
 
 # Create the service object
-ml_service = IBM::ML::Cloud.new(CLOUD_USERNAME, CLOUD_PASSWORD)
+ml_service = IBM::ML::Cloud.new(CLOUD_USERNAME, CLOUD_PASSWORD, CLOUD_INSTANCE_ID)
 
 # Fetch an authentication token
 pp ml_service.fetch_token

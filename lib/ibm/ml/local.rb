@@ -5,8 +5,7 @@ module IBM
       include ML
 
       def initialize(host, username, password)
-        @host = host
-        super(username, password)
+        super
         @http.use_ssl     = true
         @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
@@ -43,8 +42,7 @@ module IBM
         "https://#{@host}/v2/identity/token"
       end
 
-      def ldap_request(http, uri)
-        http.verify_mode    = OpenSSL::SSL::VERIFY_NONE
+      def ldap_request(uri)
         request             = Net::HTTP::Get.new uri
         request['Username'] = @username
         request['Password'] = @password
